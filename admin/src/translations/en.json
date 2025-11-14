@@ -1,11 +1,11 @@
 {
   "multiselect-field.label": "Multiselect",
   "multiselect-field.description": "A custom field for Strapi that allows users to select multiple options from a predefined list.",
-  "multiselect-field.options.availableOptions.label": "Available Options",
-  "multiselect-field.options.availableOptions.description": "One option per line.",
-  "multiselect-field.options.availableOptions.placeholder": "Option 1\nOption 2\nOption 3",
+  "multiselect-field.options.available-options.label": "Available Options",
+  "multiselect-field.options.available-options.description": "One option per line.",
+  "multiselect-field.options.available-options.placeholder": "Option 1\nOption 2\nOption 3",
   "multiselect-field.options.delimiter.label": "Delimiter",
   "multiselect-field.options.delimiter.description": "The delimiter to use when storing the selected options.",
   "multiselect-field.options.delimiter.placeholder": ",",
-  "multiselect-field.emptyState.text": "⚠️ Please provide the available options in the content builder."
+  "multiselect-field.empty-state.text": "⚠️ Please provide the available options in the content builder."
 }

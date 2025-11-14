@@ -36,15 +36,15 @@ export default {
                 name: 'options.availableOptions',
                 type: 'textarea-enum',
                 intlLabel: {
-                  id: prefixKey('options.availableOptions.label'),
+                  id: prefixKey('options.available-options.label'),
                   defaultMessage: 'Available Options',
                 },
                 description: {
-                  id: prefixKey('options.availableOptions.description'),
+                  id: prefixKey('options.available-options.description'),
                   defaultMessage: 'One option per line.',
                 },
                 placeholder: {
-                  id: prefixKey('options.availableOptions.placeholder'),
+                  id: prefixKey('options.available-options.placeholder'),
                   defaultMessage: 'Option 1\nOption 2\nOption 3',
                 },
               },
