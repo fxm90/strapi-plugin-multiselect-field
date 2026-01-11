@@ -61,7 +61,7 @@ const CapitalizedText = styled.p`
  */
 const EmptyState = () => {
   return (
-    <Typography variant="pi" textColor="neutral400">
+    <Typography variant="pi" textColor="neutral600">
       <FormattedMessage id={prefixKey('empty-state.text')} />
     </Typography>
   );
