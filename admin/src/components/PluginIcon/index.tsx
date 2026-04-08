@@ -2,6 +2,6 @@
 // https://www.svgrepo.com/svg/213538/check-mark-notepad
 import checkmarkNotepad from './checkmark-notepad.svg';
 
-const PluginIcon = () => <img src={checkmarkNotepad} />;
+const PluginIcon = () => <img src={checkmarkNotepad} alt="" />;
 
 export { PluginIcon };
