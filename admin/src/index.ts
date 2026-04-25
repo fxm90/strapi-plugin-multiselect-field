@@ -3,8 +3,10 @@ import { PLUGIN_ID } from './pluginId';
 import { Initializer } from './components/Initializer';
 import { PluginIcon } from './components/PluginIcon';
 
+import { type StrapiApp } from '@strapi/strapi/admin';
+
 export default {
-  register(app: any) {
+  register(app: StrapiApp) {
     //
     // Register custom field in the admin panel.
     //
@@ -25,16 +27,21 @@ export default {
       },
       icon: PluginIcon,
       components: {
-        Input: async () => import('./components/Multiselect'),
+        // Cast required: `@strapi/admin` vendors its own `@types/react`, causing a React namespace
+        // mismatch between the two packages. The component is correct at runtime.
+        Input: async () => import('./components/Multiselect') as any,
       },
       options: {
         base: [
           {
             sectionTitle: null,
+            // Cast as `any[]` because Strapi's `CustomFieldOptionName` only lists standard field
+            // names and `CustomFieldOption` doesn't include `placeholder`. Both are valid at runtime
+            // for plugin-defined options but aren't reflected in the upstream type definitions.
             items: [
               {
                 name: 'options.availableOptions',
-                type: 'textarea-enum',
+                type: 'text-area-enum',
                 intlLabel: {
                   id: prefixKey('options.available-options.label'),
                   defaultMessage: 'Available Options',
@@ -65,7 +72,7 @@ export default {
                 },
                 defaultValue: ',',
               },
-            ],
+            ] as any[],
           },
         ],
 

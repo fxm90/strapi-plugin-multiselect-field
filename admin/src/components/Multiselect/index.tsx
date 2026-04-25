@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { Box, Checkbox, Field, Flex, Typography } from '@strapi/design-system';
@@ -47,10 +48,10 @@ const config = {
 //
 
 /**
- * A styled <p> element that automatically uppercases
+ * A styled <span> element that automatically uppercases
  * the first letter of its content using CSS.
  */
-const CapitalizedText = styled.p`
+const CapitalizedText = styled.span`
   &::first-letter {
     text-transform: uppercase;
   }
@@ -87,16 +88,21 @@ const Multiselect = (props: Props) => {
     availableOptions = config.defaultOptions.availableOptions,
     delimiter = config.defaultOptions.delimiter,
   } = attribute.options;
+  // Strapi allows saving an empty delimiter in the field config, so we normalize falsy values
+  // here to preserve round-tripping of stored selections.
+  const normalizedDelimiter = delimiter || config.defaultOptions.delimiter;
 
   // Parses the current string value into an array of selected options.
   // E.g. `Option-1,Option-2,Option-3` => `["Option-1", "Option-2", "Option-3"]`.
-  const selectedOptions = value ? value.split(delimiter) : [];
+  const selectedOptions = value
+    ? value.split(normalizedDelimiter).map((s: string) => s.trim())
+    : [];
 
   /**
    * Triggers the `onChange` handler with the given `value`.
    */
-  const updateValue = (value: string) =>
-    onChange({ target: { name, value, type } } as React.ChangeEvent<HTMLInputElement>);
+  const updateValue = (newValue: string) =>
+    onChange({ target: { name, value: newValue, type } } as React.ChangeEvent<HTMLInputElement>);
 
   /**
    * Updates the `selectedOptions` list by adding or removing the given `option`.
@@ -114,7 +120,7 @@ const Multiselect = (props: Props) => {
       (lhs: string, rhs: string) => availableOptions.indexOf(lhs) - availableOptions.indexOf(rhs)
     );
 
-    const nextSelectedOptionsAsString = sortedNextSelectedOptions.join(delimiter);
+    const nextSelectedOptionsAsString = sortedNextSelectedOptions.join(normalizedDelimiter);
     updateValue(nextSelectedOptionsAsString);
   };
 
@@ -127,13 +133,13 @@ const Multiselect = (props: Props) => {
         <EmptyState />
       ) : (
         <Box padding={2}>
-          <Flex gap={2} direction="column" alignItems="leading">
+          <Flex gap={2} direction="column" alignItems="flex-start">
             {availableOptions.map((option) => (
               <Checkbox
                 key={option}
                 option={option}
                 checked={selectedOptions.includes(option)}
-                disabled={disabled ?? false}
+                disabled={disabled}
                 onCheckedChange={(isSelected: boolean) => updateSelectedOptions(option, isSelected)}
               >
                 <CapitalizedText>{option}</CapitalizedText>
