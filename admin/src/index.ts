@@ -38,10 +38,16 @@ export default {
             // Cast as `any[]` because Strapi's `CustomFieldOptionName` only lists standard field
             // names and `CustomFieldOption` doesn't include `placeholder`. Both are valid at runtime
             // for plugin-defined options but aren't reflected in the upstream type definitions.
+            //
+            // Additionally, the TypeScript type `CustomFieldOptionInput` declares `'text-area-enum'`
+            // (https://github.com/strapi/strapi/blob/main/packages/core/admin/admin/src/core/apis/CustomFields.ts#L26)
+            // but the runtime component map in `FormModal.tsx` registers it as `'textarea-enum'`
+            // (https://github.com/strapi/strapi/blob/main/packages/core/content-type-builder/admin/src/components/FormModal/FormModal.tsx#L1019).
+            // Using the TypeScript-declared name renders "Not supported" at runtime.
             items: [
               {
                 name: 'options.availableOptions',
-                type: 'text-area-enum',
+                type: 'textarea-enum',
                 intlLabel: {
                   id: prefixKey('options.available-options.label'),
                   defaultMessage: 'Available Options',
