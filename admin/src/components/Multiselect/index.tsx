@@ -12,7 +12,9 @@ import type { FieldValue, InputProps } from '@strapi/strapi/admin';
 
 /** The properties for our `Multiselect` component below. */
 type Props = InputProps &
-  FieldValue & {
+  // The value is a delimiter-separated string of the selected options, and is
+  // `undefined` as long as nothing has been selected yet.
+  FieldValue<string | undefined> & {
     attribute: {
       options: {
         availableOptions: string[] | undefined;
@@ -137,7 +139,6 @@ const Multiselect = (props: Props) => {
             {availableOptions.map((option) => (
               <Checkbox
                 key={option}
-                option={option}
                 checked={selectedOptions.includes(option)}
                 disabled={disabled}
                 onCheckedChange={(isSelected: boolean) => updateSelectedOptions(option, isSelected)}
