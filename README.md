@@ -1,5 +1,7 @@
 # Strapi Plugin: Multiselect Field
 
+![Strapi Plugin: Multiselect Field](./assets/header-image.png)
+
 A custom field for Strapi that allows users to select multiple options from a predefined list.
 
 ## ⏳ Installation
@@ -56,4 +58,4 @@ You can specify a **custom delimiter** for storing the selected values in the da
 
 Below are screenshots from an example application where this plugin is used to select available product sizes.
 
-<a href="./assets/content-type-builder-custom-fields.png"/><img src="./assets/content-type-builder-custom-fields-thumb.png" alt="Select a custom field in the content-type builder." /></a>&nbsp;&nbsp;<a href="./assets/content-type-builder-multiselect-field.png"/><img src="./assets/content-type-builder-multiselect-field-thumb.png" alt="Configure the Multiselect Field in the content-type builder." /></a>&nbsp;&nbsp;<a href="./assets/content-manager-list-view.png"/><img src="./assets/content-manager-list-view-thumb.png" alt="Selected options in the list view." /></a>&nbsp;&nbsp;<a href="./assets/content-manager-list-view-filtered.png"/><img src="./assets/content-manager-list-view-filtered-thumb.png" alt="Filter for selected options in the list view." /></a>&nbsp;&nbsp;<a href="./assets/content-manager-edit-view.png"/><img src="./assets/content-manager-edit-view-thumb.png" alt="Select options in the edit view." /></a>
+<a href="./assets/screenshots/content-type-builder-custom-fields.png"/><img src="./assets/screenshots/content-type-builder-custom-fields-thumb.png" alt="Select a custom field in the content-type builder." /></a>&nbsp;&nbsp;<a href="./assets/screenshots/content-type-builder-multiselect-field.png"/><img src="./assets/screenshots/content-type-builder-multiselect-field-thumb.png" alt="Configure the Multiselect Field in the content-type builder." /></a>&nbsp;&nbsp;<a href="./assets/screenshots/content-manager-list-view.png"/><img src="./assets/screenshots/content-manager-list-view-thumb.png" alt="Selected options in the list view." /></a>&nbsp;&nbsp;<a href="./assets/screenshots/content-manager-list-view-filtered.png"/><img src="./assets/screenshots/content-manager-list-view-filtered-thumb.png" alt="Filter for selected options in the list view." /></a>&nbsp;&nbsp;<a href="./assets/screenshots/content-manager-edit-view.png"/><img src="./assets/screenshots/content-manager-edit-view-thumb.png" alt="Select options in the edit view." /></a>
