@@ -66,16 +66,40 @@ describe(`test method "toggleSelectedOption()"`, () => {
     expect(result).toStrictEqual(['a', 'b', 'c']);
   });
 
-  it('should keep options that are not part of `availableOptions` at the beginning.', () => {
+  it('should keep options that are not part of `availableOptions` at the end.', () => {
     // Given
-    const selectedOptions = ['a', 'removed'];
+    const selectedOptions = ['removed', 'a'];
     const availableOptions = ['a', 'b', 'c'];
 
     // When
     const result = toggleSelectedOption(selectedOptions, 'c', true, availableOptions);
 
     // Then
-    expect(result).toStrictEqual(['removed', 'a', 'c']);
+    expect(result).toStrictEqual(['a', 'c', 'removed']);
+  });
+
+  it('should keep the previous order of options that are not part of `availableOptions`.', () => {
+    // Given
+    const selectedOptions = ['removed-2', 'a', 'removed-1'];
+    const availableOptions = ['a', 'b', 'c'];
+
+    // When
+    const result = toggleSelectedOption(selectedOptions, 'b', true, availableOptions);
+
+    // Then
+    expect(result).toStrictEqual(['a', 'b', 'removed-2', 'removed-1']);
+  });
+
+  it('should remove an option that is not part of `availableOptions`.', () => {
+    // Given
+    const selectedOptions = ['a', 'removed'];
+    const availableOptions = ['a', 'b', 'c'];
+
+    // When
+    const result = toggleSelectedOption(selectedOptions, 'removed', false, availableOptions);
+
+    // Then
+    expect(result).toStrictEqual(['a']);
   });
 
   it('should not mutate the given `selectedOptions`.', () => {

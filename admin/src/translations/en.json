@@ -7,5 +7,6 @@
   "multiselect-field.options.delimiter.label": "Delimiter",
   "multiselect-field.options.delimiter.description": "The delimiter to use when storing the selected options.",
   "multiselect-field.options.delimiter.placeholder": ",",
-  "multiselect-field.empty-state.text": "⚠️ Please provide the available options in the content builder."
+  "multiselect-field.empty-state.text": "⚠️ Please provide the available options in the content builder.",
+  "multiselect-field.unavailable-option.hint": "(no longer available)"
 }

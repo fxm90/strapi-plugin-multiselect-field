@@ -45,6 +45,8 @@ To define available options:
 
 - Enter each option on a separate line in the **Available Options** field.
 
+**Note:** Removing an option doesn't change existing entries. Options that are still selected are shown in the edit view marked as _(no longer available)_, so they can be unselected.
+
 #### Custom Delimiter
 
 You can specify a **custom delimiter** for storing the selected values in the database.
