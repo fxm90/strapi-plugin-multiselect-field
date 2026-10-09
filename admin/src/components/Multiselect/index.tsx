@@ -2,7 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { Box, Checkbox, Field, Flex, Typography } from '@strapi/design-system';
+import { parseSelectedOptions } from '../../utils/parseSelectedOptions';
 import { prefixKey } from '../../utils/prefixKey';
+import { toggleSelectedOption } from '../../utils/toggleSelectedOption';
 
 //
 // Types
@@ -96,9 +98,7 @@ const Multiselect = (props: Props) => {
 
   // Parses the current string value into an array of selected options.
   // E.g. `Option-1,Option-2,Option-3` => `["Option-1", "Option-2", "Option-3"]`.
-  const selectedOptions = value
-    ? value.split(normalizedDelimiter).map((s: string) => s.trim())
-    : [];
+  const selectedOptions = parseSelectedOptions(value, normalizedDelimiter);
 
   /**
    * Triggers the `onChange` handler with the given `value`.
@@ -113,17 +113,14 @@ const Multiselect = (props: Props) => {
    * @param isSelected - If `true`, the option is added; if `false`, it is removed.
    */
   const updateSelectedOptions = (option: string, isSelected: boolean) => {
-    const nextSelectedOptions = isSelected
-      ? selectedOptions.concat(option)
-      : selectedOptions.filter((selectedOption: string) => selectedOption !== option);
-
-    // Ensure the selected options follow the order of the available options.
-    const sortedNextSelectedOptions = nextSelectedOptions.sort(
-      (lhs: string, rhs: string) => availableOptions.indexOf(lhs) - availableOptions.indexOf(rhs)
+    const nextSelectedOptions = toggleSelectedOption(
+      selectedOptions,
+      option,
+      isSelected,
+      availableOptions
     );
 
-    const nextSelectedOptionsAsString = sortedNextSelectedOptions.join(normalizedDelimiter);
-    updateValue(nextSelectedOptionsAsString);
+    updateValue(nextSelectedOptions.join(normalizedDelimiter));
   };
 
   // Renders our container with the corresponding checkboxes for each available option.
