@@ -43,6 +43,7 @@
   ],
   "scripts": {
     "build": "strapi-plugin build",
+    "test": "vitest",
     "test:ts:back": "run -T tsc -p server/tsconfig.json",
     "test:ts:front": "run -T tsc -p admin/tsconfig.json",
     "verify": "strapi-plugin verify",
@@ -65,7 +66,8 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.30.6",
     "styled-components": "^6.5.3",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.3"
   },
   "peerDependencies": {
     "@strapi/strapi": "^5.18.0",
