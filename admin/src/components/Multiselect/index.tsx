@@ -101,6 +101,13 @@ const Multiselect = (props: Props) => {
   // E.g. `Option-1,Option-2,Option-3` => `["Option-1", "Option-2", "Option-3"]`.
   const selectedOptions = parseSelectedOptions(value, normalizedDelimiter);
 
+  // Selected options that have been removed from the field config afterwards. We still render them,
+  // so that the edit view matches the stored value (e.g. shown in the list view) and they can be unselected.
+  const unavailableSelectedOptions = getUnavailableSelectedOptions(
+    selectedOptions,
+    availableOptions
+  );
+
   /**
    * Triggers the `onChange` handler with the given `value`.
    */
@@ -124,20 +131,20 @@ const Multiselect = (props: Props) => {
     updateValue(nextSelectedOptions.join(normalizedDelimiter));
   };
 
-  // Selected options that have been removed from the field config afterwards. We still render them,
-  // so that the edit view matches the stored value (e.g. shown in the list view) and they can be unselected.
-  const unavailableSelectedOptions = getUnavailableSelectedOptions(
-    selectedOptions,
-    availableOptions
-  );
+  const hasAvailableOptions = availableOptions.length > 0;
+  const hasUnavailableSelectedOptions = unavailableSelectedOptions.length > 0;
 
   // Renders our container with the corresponding checkboxes for each available option.
   return (
     <Field.Root hint={hint} name={name} required={required}>
       <Field.Label>{label}</Field.Label>
 
-      {availableOptions.length === 0 && <EmptyState />}
-      {(availableOptions.length > 0 || unavailableSelectedOptions.length > 0) && (
+      {/*
+        The empty state only depends on `hasAvailableOptions`, as it points to a missing field config.
+        Selected options that are no longer available are rendered independently, so they can still be unselected.
+      */}
+      {!hasAvailableOptions && <EmptyState />}
+      {(hasAvailableOptions || hasUnavailableSelectedOptions) && (
         <Box padding={2}>
           <Flex gap={2} direction="column" alignItems="flex-start">
             {availableOptions.map((option) => (
