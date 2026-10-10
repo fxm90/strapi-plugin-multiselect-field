@@ -1,6 +1,6 @@
 /**
  * Returns the saved and current selected options that are not part of `availableOptions`,
- * e.g. because they have been removed from the field config after being selected.
+ * e.g. because they have been removed from the field config after being saved.
  *
  * - Note: The saved options are included, so that unselected options that are no longer available are kept
  *         until the entry is saved (and can be selected again until then).
@@ -16,8 +16,19 @@
  *          Saved options come first, followed by the options that are only part of the current selection.
  *
  * @example
- * getUnavailableSelectedOptions({ savedSelectedOptions: ['a', 'removed'], selectedOptions: ['a'], availableOptions: ['a', 'b', 'c'] }) // ['removed']
- * getUnavailableSelectedOptions({ savedSelectedOptions: [], selectedOptions: ['a', 'removed'], availableOptions: ['a', 'b', 'c'] }) // ['removed']
+ * // Keeps a saved option that is no longer available, even though it has been unselected.
+ * getUnavailableSelectedOptions({
+ *   savedSelectedOptions: ['a', 'removed'],
+ *   selectedOptions: ['a'],
+ *   availableOptions: ['a', 'b', 'c'],
+ * }) // ['removed']
+ *
+ * // Includes an unavailable option that is only part of the current selection.
+ * getUnavailableSelectedOptions({
+ *   savedSelectedOptions: [],
+ *   selectedOptions: ['a', 'removed'],
+ *   availableOptions: ['a', 'b', 'c'],
+ * }) // ['removed']
  */
 export const getUnavailableSelectedOptions = ({
   savedSelectedOptions,
