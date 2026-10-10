@@ -2,7 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { Box, Checkbox, Field, Flex, Typography } from '@strapi/design-system';
+import { getUnavailableSelectedOptions } from '../../utils/getUnavailableSelectedOptions';
+import { normalizeAvailableOptions } from '../../utils/normalizeAvailableOptions';
+import { parseSelectedOptions } from '../../utils/parseSelectedOptions';
 import { prefixKey } from '../../utils/prefixKey';
+import { toggleSelectedOption } from '../../utils/toggleSelectedOption';
 
 //
 // Types
@@ -78,6 +82,7 @@ const EmptyState = () => {
  * - `attribute`: An object containing the list of selectable `options: string[]`.
  * - `disabled`: (Optional) Disables all checkboxes when `true`.
  * - `hint`: (Optional) A string providing contextual help, shown below the field.
+ * - `initialValue`: The last saved value, in the same format as `value`.
  * - `name`: The name of the form field (used in the synthetic `onChange` event).
  * - `label`: A label for the field, displayed above the checkboxes.
  * - `onChange`: A handler that receives the updated selection as a JSON string.
@@ -85,7 +90,9 @@ const EmptyState = () => {
  * - `value`: The current value as a JSON string representing an array of selected options.
  */
 const Multiselect = (props: Props) => {
-  const { attribute, disabled, hint, label, name, onChange, required, type, value } = props;
+  const { attribute, disabled, hint, initialValue, label, name, onChange, required, type, value } =
+    props;
+
   const {
     availableOptions = config.defaultOptions.availableOptions,
     delimiter = config.defaultOptions.delimiter,
@@ -94,11 +101,23 @@ const Multiselect = (props: Props) => {
   // here to preserve round-tripping of stored selections.
   const normalizedDelimiter = delimiter || config.defaultOptions.delimiter;
 
-  // Parses the current string value into an array of selected options.
+  // Trims the available options, so they match the (trimmed) selected options below.
+  const normalizedAvailableOptions = normalizeAvailableOptions(availableOptions);
+
+  // Parses the current string value into an array of (trimmed) selected options.
   // E.g. `Option-1,Option-2,Option-3` => `["Option-1", "Option-2", "Option-3"]`.
-  const selectedOptions = value
-    ? value.split(normalizedDelimiter).map((s: string) => s.trim())
-    : [];
+  const selectedOptions = parseSelectedOptions(value, normalizedDelimiter);
+
+  // Parses the last saved value, which is needed to determine the unavailable selected options below.
+  const savedSelectedOptions = parseSelectedOptions(initialValue, normalizedDelimiter);
+
+  // Selected options that have been removed from the field config afterwards. We still render them,
+  // so that the edit view matches the stored value (e.g. shown in the list view) and they can be unselected.
+  const unavailableSelectedOptions = getUnavailableSelectedOptions({
+    savedSelectedOptions,
+    selectedOptions,
+    availableOptions: normalizedAvailableOptions,
+  });
 
   /**
    * Triggers the `onChange` handler with the given `value`.
@@ -113,30 +132,34 @@ const Multiselect = (props: Props) => {
    * @param isSelected - If `true`, the option is added; if `false`, it is removed.
    */
   const updateSelectedOptions = (option: string, isSelected: boolean) => {
-    const nextSelectedOptions = isSelected
-      ? selectedOptions.concat(option)
-      : selectedOptions.filter((selectedOption: string) => selectedOption !== option);
+    const nextSelectedOptions = toggleSelectedOption({
+      selectedOptions,
+      option,
+      isSelected,
+      availableOptions: normalizedAvailableOptions,
+      unavailableSelectedOptions,
+    });
 
-    // Ensure the selected options follow the order of the available options.
-    const sortedNextSelectedOptions = nextSelectedOptions.sort(
-      (lhs: string, rhs: string) => availableOptions.indexOf(lhs) - availableOptions.indexOf(rhs)
-    );
-
-    const nextSelectedOptionsAsString = sortedNextSelectedOptions.join(normalizedDelimiter);
-    updateValue(nextSelectedOptionsAsString);
+    updateValue(nextSelectedOptions.join(normalizedDelimiter));
   };
+
+  const hasAvailableOptions = normalizedAvailableOptions.length > 0;
+  const hasUnavailableSelectedOptions = unavailableSelectedOptions.length > 0;
 
   // Renders our container with the corresponding checkboxes for each available option.
   return (
     <Field.Root hint={hint} name={name} required={required}>
       <Field.Label>{label}</Field.Label>
 
-      {availableOptions.length === 0 ? (
-        <EmptyState />
-      ) : (
+      {/*
+        The empty state only depends on `hasAvailableOptions`, as it points to a missing field config.
+        Selected options that are no longer available are rendered independently, so they can still be unselected.
+      */}
+      {!hasAvailableOptions && <EmptyState />}
+      {(hasAvailableOptions || hasUnavailableSelectedOptions) && (
         <Box padding={2}>
           <Flex gap={2} direction="column" alignItems="flex-start">
-            {availableOptions.map((option) => (
+            {normalizedAvailableOptions.map((option) => (
               <Checkbox
                 key={option}
                 checked={selectedOptions.includes(option)}
@@ -144,6 +167,19 @@ const Multiselect = (props: Props) => {
                 onCheckedChange={(isSelected: boolean) => updateSelectedOptions(option, isSelected)}
               >
                 <CapitalizedText>{option}</CapitalizedText>
+              </Checkbox>
+            ))}
+            {unavailableSelectedOptions.map((option) => (
+              <Checkbox
+                key={option}
+                checked={selectedOptions.includes(option)}
+                disabled={disabled}
+                onCheckedChange={(isSelected: boolean) => updateSelectedOptions(option, isSelected)}
+              >
+                <CapitalizedText>{option}</CapitalizedText>{' '}
+                <Typography variant="pi" textColor="neutral600">
+                  <FormattedMessage id={prefixKey('unavailable-option.hint')} />
+                </Typography>
               </Checkbox>
             ))}
           </Flex>

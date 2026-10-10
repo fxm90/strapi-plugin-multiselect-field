@@ -34,3 +34,6 @@ jobs:
         run: |
           npx tsc -p server/tsconfig.json --noEmit
           npx tsc -p admin/tsconfig.json --noEmit
+
+      - name: Run tests
+        run: npx vitest run
