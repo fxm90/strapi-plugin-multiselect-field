@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { Box, Checkbox, Field, Flex, Typography } from '@strapi/design-system';
 import { getUnavailableSelectedOptions } from '../../utils/getUnavailableSelectedOptions';
+import { normalizeAvailableOptions } from '../../utils/normalizeAvailableOptions';
 import { parseSelectedOptions } from '../../utils/parseSelectedOptions';
 import { prefixKey } from '../../utils/prefixKey';
 import { toggleSelectedOption } from '../../utils/toggleSelectedOption';
@@ -97,7 +98,10 @@ const Multiselect = (props: Props) => {
   // here to preserve round-tripping of stored selections.
   const normalizedDelimiter = delimiter || config.defaultOptions.delimiter;
 
-  // Parses the current string value into an array of selected options.
+  // Trims the available options, so they match the (trimmed) selected options below.
+  const normalizedAvailableOptions = normalizeAvailableOptions(availableOptions);
+
+  // Parses the current string value into an array of (trimmed) selected options.
   // E.g. `Option-1,Option-2,Option-3` => `["Option-1", "Option-2", "Option-3"]`.
   const selectedOptions = parseSelectedOptions(value, normalizedDelimiter);
 
@@ -105,7 +109,7 @@ const Multiselect = (props: Props) => {
   // so that the edit view matches the stored value (e.g. shown in the list view) and they can be unselected.
   const unavailableSelectedOptions = getUnavailableSelectedOptions(
     selectedOptions,
-    availableOptions
+    normalizedAvailableOptions
   );
 
   /**
@@ -125,13 +129,13 @@ const Multiselect = (props: Props) => {
       selectedOptions,
       option,
       isSelected,
-      availableOptions,
+      availableOptions: normalizedAvailableOptions,
     });
 
     updateValue(nextSelectedOptions.join(normalizedDelimiter));
   };
 
-  const hasAvailableOptions = availableOptions.length > 0;
+  const hasAvailableOptions = normalizedAvailableOptions.length > 0;
   const hasUnavailableSelectedOptions = unavailableSelectedOptions.length > 0;
 
   // Renders our container with the corresponding checkboxes for each available option.
@@ -147,7 +151,7 @@ const Multiselect = (props: Props) => {
       {(hasAvailableOptions || hasUnavailableSelectedOptions) && (
         <Box padding={2}>
           <Flex gap={2} direction="column" alignItems="flex-start">
-            {availableOptions.map((option) => (
+            {normalizedAvailableOptions.map((option) => (
               <Checkbox
                 key={option}
                 checked={selectedOptions.includes(option)}
