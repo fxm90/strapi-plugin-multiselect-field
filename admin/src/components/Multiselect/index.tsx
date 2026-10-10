@@ -137,6 +137,7 @@ const Multiselect = (props: Props) => {
       option,
       isSelected,
       availableOptions: normalizedAvailableOptions,
+      unavailableSelectedOptions,
     });
 
     updateValue(nextSelectedOptions.join(normalizedDelimiter));

@@ -12,6 +12,7 @@ describe(`test method "toggleSelectedOption()"`, () => {
     const option = 'b';
     const isSelected = true;
     const availableOptions = ['a', 'b', 'c'];
+    const unavailableSelectedOptions: string[] = [];
 
     // When
     const result = toggleSelectedOption({
@@ -19,6 +20,7 @@ describe(`test method "toggleSelectedOption()"`, () => {
       option,
       isSelected,
       availableOptions,
+      unavailableSelectedOptions,
     });
 
     // Then
@@ -31,6 +33,7 @@ describe(`test method "toggleSelectedOption()"`, () => {
     const option = 'a';
     const isSelected = true;
     const availableOptions = ['a', 'b', 'c'];
+    const unavailableSelectedOptions: string[] = [];
 
     // When
     const result = toggleSelectedOption({
@@ -38,6 +41,7 @@ describe(`test method "toggleSelectedOption()"`, () => {
       option,
       isSelected,
       availableOptions,
+      unavailableSelectedOptions,
     });
 
     // Then
@@ -50,6 +54,7 @@ describe(`test method "toggleSelectedOption()"`, () => {
     const option = 'b';
     const isSelected = false;
     const availableOptions = ['a', 'b', 'c'];
+    const unavailableSelectedOptions: string[] = [];
 
     // When
     const result = toggleSelectedOption({
@@ -57,6 +62,7 @@ describe(`test method "toggleSelectedOption()"`, () => {
       option,
       isSelected,
       availableOptions,
+      unavailableSelectedOptions,
     });
 
     // Then
@@ -69,6 +75,7 @@ describe(`test method "toggleSelectedOption()"`, () => {
     const option = 'a';
     const isSelected = false;
     const availableOptions = ['a', 'b', 'c'];
+    const unavailableSelectedOptions: string[] = [];
 
     // When
     const result = toggleSelectedOption({
@@ -76,6 +83,7 @@ describe(`test method "toggleSelectedOption()"`, () => {
       option,
       isSelected,
       availableOptions,
+      unavailableSelectedOptions,
     });
 
     // Then
@@ -88,6 +96,7 @@ describe(`test method "toggleSelectedOption()"`, () => {
     const option = 'b';
     const isSelected = true;
     const availableOptions = ['a', 'b', 'c'];
+    const unavailableSelectedOptions: string[] = [];
 
     // When
     const result = toggleSelectedOption({
@@ -95,6 +104,7 @@ describe(`test method "toggleSelectedOption()"`, () => {
       option,
       isSelected,
       availableOptions,
+      unavailableSelectedOptions,
     });
 
     // Then
@@ -107,6 +117,7 @@ describe(`test method "toggleSelectedOption()"`, () => {
     const option = 'c';
     const isSelected = true;
     const availableOptions = ['a', 'b', 'c'];
+    const unavailableSelectedOptions = ['removed'];
 
     // When
     const result = toggleSelectedOption({
@@ -114,18 +125,20 @@ describe(`test method "toggleSelectedOption()"`, () => {
       option,
       isSelected,
       availableOptions,
+      unavailableSelectedOptions,
     });
 
     // Then
     expect(result).toStrictEqual(['a', 'c', 'removed']);
   });
 
-  it('should keep the previous order of options that are not part of `availableOptions`.', () => {
+  it('should order options that are not part of `availableOptions` by `unavailableSelectedOptions`.', () => {
     // Given
-    const selectedOptions = ['removed-2', 'a', 'removed-1'];
+    const selectedOptions = ['removed-1', 'a', 'removed-2'];
     const option = 'b';
     const isSelected = true;
     const availableOptions = ['a', 'b', 'c'];
+    const unavailableSelectedOptions = ['removed-2', 'removed-1'];
 
     // When
     const result = toggleSelectedOption({
@@ -133,6 +146,49 @@ describe(`test method "toggleSelectedOption()"`, () => {
       option,
       isSelected,
       availableOptions,
+      unavailableSelectedOptions,
+    });
+
+    // Then
+    expect(result).toStrictEqual(['a', 'b', 'removed-2', 'removed-1']);
+  });
+
+  it('should restore the previous order after unselecting and selecting an unavailable option again.', () => {
+    // Given
+    const selectedOptions = ['removed-2'];
+    const option = 'removed-1';
+    const isSelected = true;
+    const availableOptions = ['a', 'b', 'c'];
+    const unavailableSelectedOptions = ['removed-1', 'removed-2'];
+
+    // When
+    const result = toggleSelectedOption({
+      selectedOptions,
+      option,
+      isSelected,
+      availableOptions,
+      unavailableSelectedOptions,
+    });
+
+    // Then
+    expect(result).toStrictEqual(['removed-1', 'removed-2']);
+  });
+
+  it('should keep the previous order of options that are neither available nor part of `unavailableSelectedOptions`.', () => {
+    // Given
+    const selectedOptions = ['removed-2', 'a', 'removed-1'];
+    const option = 'b';
+    const isSelected = true;
+    const availableOptions = ['a', 'b', 'c'];
+    const unavailableSelectedOptions: string[] = [];
+
+    // When
+    const result = toggleSelectedOption({
+      selectedOptions,
+      option,
+      isSelected,
+      availableOptions,
+      unavailableSelectedOptions,
     });
 
     // Then
@@ -145,6 +201,7 @@ describe(`test method "toggleSelectedOption()"`, () => {
     const option = 'removed';
     const isSelected = false;
     const availableOptions = ['a', 'b', 'c'];
+    const unavailableSelectedOptions = ['removed'];
 
     // When
     const result = toggleSelectedOption({
@@ -152,6 +209,7 @@ describe(`test method "toggleSelectedOption()"`, () => {
       option,
       isSelected,
       availableOptions,
+      unavailableSelectedOptions,
     });
 
     // Then
