@@ -112,10 +112,18 @@ const Multiselect = (props: Props) => {
   // are kept until the entry is saved (and can be selected again until then).
   const savedSelectedOptions = parseSelectedOptions(initialValue, normalizedDelimiter);
 
+  // The saved and current selected options combined, to determine the unavailable selected options.
+  // The current value may contain options that aren't saved yet,
+  // e.g. after the i18n action "Fill in from another locale".
+  // We include them, so they are rendered and can be unselected.
+  const savedAndCurrentSelectedOptions = [
+    ...new Set([...savedSelectedOptions, ...selectedOptions]),
+  ];
+
   // Selected options that have been removed from the field config afterwards. We still render them,
   // so that the edit view matches the stored value (e.g. shown in the list view) and they can be unselected.
   const unavailableSelectedOptions = getUnavailableSelectedOptions(
-    savedSelectedOptions,
+    savedAndCurrentSelectedOptions,
     normalizedAvailableOptions
   );
 
