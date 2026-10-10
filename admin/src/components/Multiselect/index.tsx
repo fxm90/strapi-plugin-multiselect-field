@@ -114,12 +114,12 @@ const Multiselect = (props: Props) => {
    * @param isSelected - If `true`, the option is added; if `false`, it is removed.
    */
   const updateSelectedOptions = (option: string, isSelected: boolean) => {
-    const nextSelectedOptions = toggleSelectedOption(
+    const nextSelectedOptions = toggleSelectedOption({
       selectedOptions,
       option,
       isSelected,
-      availableOptions
-    );
+      availableOptions,
+    });
 
     updateValue(nextSelectedOptions.join(normalizedDelimiter));
   };

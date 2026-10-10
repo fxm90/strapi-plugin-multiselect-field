@@ -14,15 +14,20 @@
  * @returns A new list of selected options.
  *
  * @example
- * toggleSelectedOption(['c'], 'a', true, ['a', 'b', 'c']) // ['a', 'c']
- * toggleSelectedOption(['a', 'c'], 'a', false, ['a', 'b', 'c']) // ['c']
+ * toggleSelectedOption({ selectedOptions: ['c'], option: 'a', isSelected: true, availableOptions: ['a', 'b', 'c'] }) // ['a', 'c']
+ * toggleSelectedOption({ selectedOptions: ['a', 'c'], option: 'a', isSelected: false, availableOptions: ['a', 'b', 'c'] }) // ['c']
  */
-export const toggleSelectedOption = (
-  selectedOptions: string[],
-  option: string,
-  isSelected: boolean,
-  availableOptions: string[]
-): string[] => {
+export const toggleSelectedOption = ({
+  selectedOptions,
+  option,
+  isSelected,
+  availableOptions,
+}: {
+  selectedOptions: string[];
+  option: string;
+  isSelected: boolean;
+  availableOptions: string[];
+}): string[] => {
   const nextSelectedOptions = isSelected
     ? selectedOptions.concat(option)
     : selectedOptions.filter((selectedOption) => selectedOption !== option);
