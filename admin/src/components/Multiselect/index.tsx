@@ -82,6 +82,7 @@ const EmptyState = () => {
  * - `attribute`: An object containing the list of selectable `options: string[]`.
  * - `disabled`: (Optional) Disables all checkboxes when `true`.
  * - `hint`: (Optional) A string providing contextual help, shown below the field.
+ * - `initialValue`: The last saved value, in the same format as `value`.
  * - `name`: The name of the form field (used in the synthetic `onChange` event).
  * - `label`: A label for the field, displayed above the checkboxes.
  * - `onChange`: A handler that receives the updated selection as a JSON string.
@@ -89,7 +90,9 @@ const EmptyState = () => {
  * - `value`: The current value as a JSON string representing an array of selected options.
  */
 const Multiselect = (props: Props) => {
-  const { attribute, disabled, hint, label, name, onChange, required, type, value } = props;
+  const { attribute, disabled, hint, initialValue, label, name, onChange, required, type, value } =
+    props;
+
   const {
     availableOptions = config.defaultOptions.availableOptions,
     delimiter = config.defaultOptions.delimiter,
@@ -105,10 +108,14 @@ const Multiselect = (props: Props) => {
   // E.g. `Option-1,Option-2,Option-3` => `["Option-1", "Option-2", "Option-3"]`.
   const selectedOptions = parseSelectedOptions(value, normalizedDelimiter);
 
+  // Parses the last saved value, so unselected options that are no longer available
+  // are kept until the entry is saved (and can be selected again until then).
+  const savedSelectedOptions = parseSelectedOptions(initialValue, normalizedDelimiter);
+
   // Selected options that have been removed from the field config afterwards. We still render them,
   // so that the edit view matches the stored value (e.g. shown in the list view) and they can be unselected.
   const unavailableSelectedOptions = getUnavailableSelectedOptions(
-    selectedOptions,
+    savedSelectedOptions,
     normalizedAvailableOptions
   );
 
@@ -164,7 +171,7 @@ const Multiselect = (props: Props) => {
             {unavailableSelectedOptions.map((option) => (
               <Checkbox
                 key={option}
-                checked
+                checked={selectedOptions.includes(option)}
                 disabled={disabled}
                 onCheckedChange={(isSelected: boolean) => updateSelectedOptions(option, isSelected)}
               >
