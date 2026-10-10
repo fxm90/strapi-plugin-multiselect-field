@@ -1,18 +1,40 @@
 /**
- * Returns the selected options that are not part of `availableOptions`,
+ * Returns the saved and current selected options that are not part of `availableOptions`,
  * e.g. because they have been removed from the field config after being selected.
  *
+ * - Note: The saved options are included, so that unselected options that are no longer available are kept
+ *         until the entry is saved (and can be selected again until then).
+ *
+ *         The current options are included, as the current value may contain options that aren't saved yet,
+ *         e.g. after the i18n action "Fill in from another locale". So they are rendered and can be unselected.
+ *
+ * @param savedSelectedOptions - The selected options of the last saved value.
  * @param selectedOptions - The currently selected options.
  * @param availableOptions - The options in their configured order.
  *
- * @returns The selected options that are no longer available, in their selected order.
+ * @returns The selected options that are no longer available, without duplicates.
+ *          Saved options come first, followed by the options that are only part of the current selection.
  *
  * @example
- * getUnavailableSelectedOptions(['a', 'removed'], ['a', 'b', 'c']) // ['removed']
+ * getUnavailableSelectedOptions({ savedSelectedOptions: ['a', 'removed'], selectedOptions: ['a'], availableOptions: ['a', 'b', 'c'] }) // ['removed']
+ * getUnavailableSelectedOptions({ savedSelectedOptions: [], selectedOptions: ['a', 'removed'], availableOptions: ['a', 'b', 'c'] }) // ['removed']
  */
-export const getUnavailableSelectedOptions = (
-  selectedOptions: string[],
-  availableOptions: string[]
-): string[] => {
-  return selectedOptions.filter((selectedOption) => !availableOptions.includes(selectedOption));
+export const getUnavailableSelectedOptions = ({
+  savedSelectedOptions,
+  selectedOptions,
+  availableOptions,
+}: {
+  savedSelectedOptions: string[];
+  selectedOptions: string[];
+  availableOptions: string[];
+}): string[] => {
+  // Combines the saved and current selected options (see note above).
+  // We use a `Set` to drop options that are part of both, so they are only rendered once.
+  const savedAndCurrentSelectedOptions = [
+    ...new Set([...savedSelectedOptions, ...selectedOptions]),
+  ];
+
+  return savedAndCurrentSelectedOptions.filter(
+    (selectedOption) => !availableOptions.includes(selectedOption)
+  );
 };
