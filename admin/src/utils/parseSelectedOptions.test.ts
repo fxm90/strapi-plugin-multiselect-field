@@ -104,4 +104,15 @@ describe(`test method "parseSelectedOptions()"`, () => {
     // Then
     expect(result).toStrictEqual([]);
   });
+
+  it('should drop duplicate entries.', () => {
+    // Given
+    const value = 'Option-1,Option-2, Option-1';
+
+    // When
+    const result = parseSelectedOptions(value, ',');
+
+    // Then
+    expect(result).toStrictEqual(['Option-1', 'Option-2']);
+  });
 });
